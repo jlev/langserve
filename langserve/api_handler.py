@@ -457,6 +457,7 @@ class APIHandler:
         # of features in the future if need be.
         path: str,
         prefix: str = "",
+        root_path: str = "",
         input_type: Union[Type, Literal["auto"], BaseModel] = "auto",
         output_type: Union[Type, Literal["auto"], BaseModel] = "auto",
         config_keys: Sequence[str] = ("configurable",),
@@ -480,6 +481,7 @@ class APIHandler:
             prefix: Any prefix that may need to be added to the path
                 to get the full URL for the runnable.
                 This is relevant when the runnable is added to an APIRouter.
+            root_path: The FastAPI root_prefix to be applied to playground assets paths.
             input_type: type to use for input validation.
                 Default is "auto" which will use the InputType of the runnable.
                 User is free to provide a custom type annotation.
@@ -535,7 +537,7 @@ class APIHandler:
         self._config_keys = config_keys
 
         self._path = path
-        self._base_url = prefix + path
+        self._base_url = root_path + prefix + path
         self._include_callback_events = include_callback_events
         self._per_req_config_modifier = per_req_config_modifier
         self._serializer = WellKnownLCSerializer()

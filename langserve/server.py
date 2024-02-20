@@ -233,6 +233,7 @@ def add_routes(
     runnable: Runnable,
     *,
     path: str = "",
+    root_path: str = "",
     input_type: Union[Type, Literal["auto"], BaseModel] = "auto",
     output_type: Union[Type, Literal["auto"], BaseModel] = "auto",
     config_keys: Sequence[str] = ("configurable",),
@@ -261,6 +262,7 @@ def add_routes(
         app: The FastAPI app or APIRouter to which routes should be added.
         runnable: The runnable to wrap, must not be stateful.
         path: A path to prepend to all routes.
+        root_path: The FastAPI root_prefix to be applied to playground assets paths.
         input_type: type to use for input validation.
             Default is "auto" which will use the InputType of the runnable.
             User is free to provide a custom type annotation.
@@ -365,6 +367,10 @@ def add_routes(
         # API routers are not hashable
         _register_path_for_app(app, path)
 
+        # Reference root_path from FastAPI if accessible
+        if not root_path:
+            root_path = app.root_path
+
     # Determine the base URL for the playground endpoint
     prefix = app.prefix if isinstance(app, APIRouter) else ""  # type: ignore
 
@@ -381,6 +387,7 @@ def add_routes(
         runnable,
         path=path,
         prefix=prefix,
+        root_path=root_path,
         input_type=input_type,
         output_type=output_type,
         config_keys=config_keys,
