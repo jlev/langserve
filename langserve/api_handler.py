@@ -1332,9 +1332,9 @@ class APIHandler:
         feedback_enabled = tracing_is_enabled() and self._enable_feedback_endpoint
 
         if self._base_url.endswith("/"):
-            playground_url = self._base_url + "playground"
+            playground_url = request.scope["root_path"] + self._base_url + "playground"
         else:
-            playground_url = self._base_url + "/playground"
+            playground_url = request.scope["root_path"] + self._base_url + "/playground"
 
         return await serve_playground(
             self._runnable.with_config(config),
